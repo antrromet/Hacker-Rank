@@ -1,3 +1,5 @@
+// https://www.hackerrank.com/challenges/bear-and-workbook
+
 import java.util.Scanner;
 
 public class GridSearch {
