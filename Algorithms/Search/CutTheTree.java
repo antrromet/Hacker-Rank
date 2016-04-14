@@ -26,33 +26,27 @@ public class CutTheTree {
 			nodes[firstNodeIndex - 1].addNeighbor(nodes[secondNodeIndex-1]);
 			nodes[secondNodeIndex - 1].addNeighbor(nodes[firstNodeIndex-1]);
 		}
-		int x = dfs(nodes[0], totalSum);
+		int x = findMinDiff(nodes, totalSum);
 		System.out.println(x);
 	}
 	
-	private static int dfs(Node root, int totalSum){
-		int leftTreeSum = 0, rightTreeSum = totalSum;
+	private static int findMinDiff(Node[] nodes, int totalSum){
 		int min = Integer.MAX_VALUE;
-		root.setVisited(true);
-		Queue<Node> q = new LinkedList<Node>();
-		q.add(root);
-		while(!q.isEmpty()){
-			Node x = q.remove();
-			leftTreeSum += x.value;
-			rightTreeSum -= x.value;
-			int diff = Math.abs(leftTreeSum - rightTreeSum);
-			if(diff< min){
-				min = diff;
-			}
-			for(Node neighbor: x.neighbors){
-				if(!neighbor.isVisited){
-					neighbor.setVisited(true);
-					q.add(neighbor);
-				}
+		dfs(nodes[0]);
+		for(Node n: nodes){
+			min = Math.min(min, Math.abs(totalSum - 2*n.dfsValue));
+		}
+		return min;
+	}
+	
+	private static int dfs(Node n){
+		n.setVisited(true);
+		for(Node neighbor: n.neighbors){
+			if(!neighbor.isVisited){
+				n.dfsValue += dfs(neighbor);
 			}
 		}
-		
-		return min;
+		return n.dfsValue;
 	}
 	
 	static class Node {
@@ -60,16 +54,22 @@ public class CutTheTree {
 		private int index;
 		private int value;
 		private boolean isVisited;
+		private int dfsValue;
 		
 		public Node(int index, int value){
 			this.index = index;
 			this.value = value;
+			dfsValue = value;
 			
 			neighbors = new ArrayList<Node>();
 		}
 		
 		public void addNeighbor(Node n){
 			neighbors.add(n);
+		}
+		
+		public void removeNeighbor(Node n){
+			neighbors.remove(n);
 		}
 		
 		public void setVisited(boolean visited){
