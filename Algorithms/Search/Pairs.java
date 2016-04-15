@@ -9,14 +9,36 @@ import java.util.regex.*;
 public class Pairs {
     static int pairs(int[] a,int k) {
     	int count = 0;
+    	Arrays.sort(a);
     	for(int i=0;i<a.length;i++){
-    		for(int j=i+1;j<a.length;j++){
-    			if(Math.abs(a[j]-a[i]) == k){
-    				count++;
-    			}
+    		if(find(a, a[i] + k, i+1)){
+    			count++;
     		}
     	}
         return count;
+    }
+    
+    static boolean find(int[] a, int x, int startPos){
+    	int pos = find(a, x, startPos, a.length-1);
+    	if(pos>=0){
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+    
+    static int find(int[] a, int x, int low, int high){
+    	if(high >= low){
+    		int mid = (high+low)/2;
+    		if(a[mid] == x){
+    			return mid;
+    		} else if(a[mid] > x){
+	    		return find(a, x, low, mid-1);
+    		} else {
+    			return find(a, x, mid+1, high);
+    		}
+    	}
+    	return -1;
     }
 
     public static void main(String[] args) {
