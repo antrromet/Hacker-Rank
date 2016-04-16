@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Collection;
 
 public class SimilarPair {
 
@@ -11,6 +12,7 @@ public class SimilarPair {
 		int n = in.nextInt();
 		int T = in.nextInt();
 		Map<Integer, Node> nodes = new HashMap<Integer, Node>(); 
+		int rootValue = -1;
 		for(int i=1;i<n;i++){
 			int num1 = in.nextInt();
 			int num2 = in.nextInt();
@@ -23,6 +25,9 @@ public class SimilarPair {
 			} else {
 				parent = new Node(num1);
 				nodes.put(num1, parent);
+				if(rootValue < 0){
+					rootValue = num1;
+				}
 			}
 			
 			if(nodes.containsKey(num2)){
@@ -33,13 +38,46 @@ public class SimilarPair {
 			}
 			
 			parent.addChild(child);
-			
+		}
+		
+// 		Node root = nodes.get(rootValue);
+		int count = 0;
+		for(Node node:nodes.values()){
+			resetNodesVisited(nodes);
+			count += findPair(node, T);
+		}
+		System.out.println(count);
+	}
+	
+	private static void resetNodesVisited(Map<Integer, Node> nodes){
+		for(Node node: nodes.values()){
+			node.setVisited(false);
+		}
+	}
+	
+	private static int findPair(Node root, int T){
+		dfs(root, root, T);
+		return root.pairs;
+	}
+	
+	private static void dfs(Node ancestor, Node root, int T){
+		root.setVisited(true);
+		int diff = root.value - ancestor.value;
+		if(diff!=0 && Math.abs(diff) <= T){
+			ancestor.pairs+=1;
+		}
+		for(Node child: root.children){
+			if(!child.isVisited){
+				dfs(ancestor, child, T);
+			}
 		}
 	}
 	
 	static class Node {
 		int value;
 		List<Node> children;
+		boolean isVisited;
+		int pairs;
 		
 		public Node(int value){
 			this.value = value;
@@ -48,6 +86,10 @@ public class SimilarPair {
 		
 		public void addChild(Node child){
 			children.add(child);
+		}
+		
+		public void setVisited(boolean visited){
+			isVisited = visited;
 		}
 	}
 
