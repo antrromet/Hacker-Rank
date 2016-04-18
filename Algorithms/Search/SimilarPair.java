@@ -40,7 +40,6 @@ public class SimilarPair {
 			parent.addChild(child);
 		}
 		
-// 		Node root = nodes.get(rootValue);
 		int count = 0;
 		for(Node node:nodes.values()){
 			resetNodesVisited(nodes);
